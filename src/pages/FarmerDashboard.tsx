@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Leaf, Plus, Upload, Package, Calendar, Weight, MapPin, User, FileText, Camera } from "lucide-react";
+import { Leaf, Plus, Upload, Package, Calendar, Weight, MapPin, User, FileText, Camera, QrCode } from "lucide-react";
+import { QRCodeSVG } from 'qrcode.react';
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
@@ -260,8 +261,50 @@ const FarmerDashboard = () => {
                   </AccordionTrigger>
                   <AccordionContent className="px-4 pb-4">
                     <div className="grid md:grid-cols-2 gap-6 mt-4">
-                      {/* Product Photo */}
+                      {/* QR Code and Product Photo */}
                       <div className="space-y-4">
+                        <div className="bg-white p-4 rounded-lg border border-border">
+                          <Label className="text-sm font-medium flex items-center gap-2 mb-4">
+                            <QrCode className="h-4 w-4" />
+                            Product QR Code
+                          </Label>
+                          <div className="flex flex-col items-center gap-4">
+                            <QRCodeSVG
+                              id={`qr-${batch.id}`}
+                              value={`${window.location.origin}/trace/${batch.id}`}
+                              size={200}
+                              level="H"
+                              includeMargin={true}
+                            />
+                            <Button 
+                              variant="outline" 
+                              onClick={() => {
+                                const canvas = document.createElement("canvas");
+                                const svg = document.querySelector(`#qr-${batch.id}`);
+                                const svgData = new XMLSerializer().serializeToString(svg!);
+                                const img = new Image();
+                                
+                                img.onload = () => {
+                                  canvas.width = img.width;
+                                  canvas.height = img.height;
+                                  const ctx = canvas.getContext("2d")!;
+                                  ctx.drawImage(img, 0, 0);
+                                  
+                                  const pngFile = canvas.toDataURL("image/png");
+                                  const downloadLink = document.createElement("a");
+                                  downloadLink.download = `${batch.name}-${batch.id}-QR.png`;
+                                  downloadLink.href = pngFile;
+                                  downloadLink.click();
+                                };
+                                
+                                img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+                              }}
+                              className="w-full"
+                            >
+                              Download QR Code
+                            </Button>
+                          </div>
+                        </div>
                         {batch.photo && (
                           <div>
                             <Label className="text-sm font-medium">Product Photo</Label>

@@ -11,6 +11,7 @@ import Traceability from "./pages/Traceability";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
+import { ScanProduct } from "./pages/ScanProduct";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/distributor" element={<DistributorDashboard />} />
           <Route path="/retailer" element={<RetailerDashboard />} />
           <Route path="/trace/:batchId" element={<Traceability />} />
+          <Route path="/scan" element={<ScanProduct />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
